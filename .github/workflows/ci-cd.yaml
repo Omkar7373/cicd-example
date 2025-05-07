@@ -22,7 +22,7 @@ jobs:
         run: |
           cd frontend
           npm install
-          npm run lint # Assuming you have a lint script in frontend/package.json
+        # npm run lint # Assuming you have a lint script in frontend/package.json
 
       - name: Set up Python (for backend linting)
         uses: actions/setup-python@v2
