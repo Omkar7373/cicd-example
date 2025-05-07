@@ -1,22 +1,36 @@
+FROM node:18-alpine AS build
+WORKDIR /app
+COPY package*.json .
+RUN npm install
+COPY . .
+RUN npm run build
+ 
+# Production Stage
+FROM nginx:stable-alpine AS production
+COPY --from=build /app/build /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+
+
 # Use a lightweight Node.js image as the base
 #FROM node:14-alpine as builder
-FROM node:14-alpine
+#FROM node:14-alpine
 
 # Set the working directory inside the container
-WORKDIR /app/frontend
+#WORKDIR /app/frontend
 
 # Copy package.json and package-lock.json (or yarn.lock)
 # to leverage Docker's layer caching
-COPY package*.json ./
+#COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+#RUN npm install
 
 # Copy the rest of the application code
-COPY . .
+#COPY . .
 
 # Build the React application (assuming Create React App or similar build setup)
-RUN npm run build
+#RUN npm run build
 
 # --- Production stage ---
 #FROM node:14-alpine
