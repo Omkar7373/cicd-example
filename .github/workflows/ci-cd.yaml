@@ -64,7 +64,7 @@ jobs:
       - name: Push backend Docker image (with SHA tag)
         run: docker push ${{ secrets.DOCKER_USERNAME }}/backend:${{ github.sha }}
 
-      - name: Stop existing Docker Compose services (Optional: for redeploy)
+      - name: Stop existing Docker Compose services (or redeploy)
         # This step is optional and depends on your deployment strategy.
         # You might need to SSH into your server to run this.
         # For simplicity in this example, we'll just demonstrate running.
