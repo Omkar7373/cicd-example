@@ -79,4 +79,7 @@ jobs:
         # or are using a service like Docker Machine or a cloud provider's
         # container orchestration. For a simple example, we'll assume
         # Docker Compose is available on the runner.
-        run: docker-compose up -d --build
+        run: |
+          sudo apt-install docker-compose -y
+          docker-compose --version
+          docker-compose up -d --build
