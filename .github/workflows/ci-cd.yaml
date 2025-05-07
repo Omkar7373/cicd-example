@@ -1,0 +1,82 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js (for frontend linting)
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install frontend dependencies and run lint
+        run: |
+          cd frontend
+          npm install
+          npm run lint # Assuming you have a lint script in frontend/package.json
+
+      - name: Set up Python (for backend linting)
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      - name: Install backend dependencies and run lint
+        run: |
+          cd backend
+          pip install -r requirements.txt
+          # Add your backend lint command here, e.g., flake8, black, etc.
+          # Example: flake8 .
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and tag frontend Docker image
+        run: |
+          docker build -t my-dockerhub-username/frontend:latest ./frontend
+          docker tag my-dockerhub-username/frontend:latest my-dockerhub-username/frontend:${{ github.sha }} # Tag with commit SHA
+
+      - name: Build and tag backend Docker image
+        run: |
+          docker build -t my-dockerhub-username/backend:latest ./backend
+          docker tag my-dockerhub-username/backend:latest my-dockerhub-username/backend:${{ github.sha }} # Tag with commit SHA
+
+      - name: Push frontend Docker image
+        run: docker push my-dockerhub-username/frontend:latest
+
+      - name: Push backend Docker image
+        run: docker push my-dockerhub-username/backend:latest
+
+      - name: Push frontend Docker image (with SHA tag)
+        run: docker push my-dockerhub-username/frontend:${{ github.sha }}
+
+      - name: Push backend Docker image (with SHA tag)
+        run: docker push my-dockerhub-username/backend:${{ github.sha }}
+
+      - name: Stop existing Docker Compose services (Optional: for redeploy)
+        # This step is optional and depends on your deployment strategy.
+        # You might need to SSH into your server to run this.
+        # For simplicity in this example, we'll just demonstrate running.
+        # In a real-world scenario, consider more robust deployment tools.
+        run: |
+          echo "Skipping stopping existing services for this example."
+          # Example if you were SSHing:
+          # ssh user@your-server-ip "cd /path/to/your/app && docker-compose down"
+
+      - name: Run Docker Compose
+        # This step assumes you have Docker Compose installed on the runner
+        # or are using a service like Docker Machine or a cloud provider's
+        # container orchestration. For a simple example, we'll assume
+        # Docker Compose is available on the runner.
+        run: docker-compose up -d --build
