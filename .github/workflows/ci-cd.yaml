@@ -44,25 +44,25 @@ jobs:
 
       - name: Build and tag frontend Docker image
         run: |
-          docker build -t my-dockerhub-username/frontend:latest ./frontend
-          docker tag my-dockerhub-username/frontend:latest my-dockerhub-username/frontend:${{ github.sha }} # Tag with commit SHA
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/frontend:latest ./frontend
+          docker tag ${{ secrets.DOCKER_USERNAME }}/frontend:latest ${{ secrets.DOCKER_USERNAME }}/frontend:${{ github.sha }} # Tag with commit SHA
 
       - name: Build and tag backend Docker image
         run: |
-          docker build -t my-dockerhub-username/backend:latest ./backend
-          docker tag my-dockerhub-username/backend:latest my-dockerhub-username/backend:${{ github.sha }} # Tag with commit SHA
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/backend:latest ./backend
+          docker tag ${{ secrets.DOCKER_USERNAME }}/backend:latest ${{ secrets.DOCKER_USERNAME }}/backend:${{ github.sha }} # Tag with commit SHA
 
       - name: Push frontend Docker image
-        run: docker push my-dockerhub-username/frontend:latest
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest
 
       - name: Push backend Docker image
-        run: docker push my-dockerhub-username/backend:latest
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest
 
       - name: Push frontend Docker image (with SHA tag)
-        run: docker push my-dockerhub-username/frontend:${{ github.sha }}
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/frontend:${{ github.sha }}
 
       - name: Push backend Docker image (with SHA tag)
-        run: docker push my-dockerhub-username/backend:${{ github.sha }}
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/backend:${{ github.sha }}
 
       - name: Stop existing Docker Compose services (Optional: for redeploy)
         # This step is optional and depends on your deployment strategy.
