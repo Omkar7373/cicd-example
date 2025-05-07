@@ -33,8 +33,8 @@ jobs:
         run: |
           cd backend
           pip install -r requirements.txt
-          # Add your backend lint command here, e.g., flake8, black, etc.
-          # Example: flake8 .
+         #  Add your backend lint command here, e.g., flake8, black, etc.
+         # Example: flake8 .
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
@@ -52,11 +52,11 @@ jobs:
           docker build -t ${{ secrets.DOCKER_USERNAME }}/backend:latest ./backend/
           docker tag ${{ secrets.DOCKER_USERNAME }}/backend:latest ${{ secrets.DOCKER_USERNAME }}/backend:${{ github.sha }} # Tag with commit SHA
 
-      - name: Push frontend Docker image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest
+      #- name: Push frontend Docker image
+      #  run: docker push ${{ secrets.DOCKER_USERNAME }}/frontend
 
-      - name: Push backend Docker image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest
+      #- name: Push backend Docker image
+      #  run: docker push ${{ secrets.DOCKER_USERNAME }}/backend
 
       - name: Push frontend Docker image (with SHA tag)
         run: docker push ${{ secrets.DOCKER_USERNAME }}/frontend:${{ github.sha }}
@@ -64,13 +64,13 @@ jobs:
       - name: Push backend Docker image (with SHA tag)
         run: docker push ${{ secrets.DOCKER_USERNAME }}/backend:${{ github.sha }}
 
-      - name: Stop existing Docker Compose services (or redeploy)
+      #- name: Stop existing Docker Compose services (or redeploy)
         # This step is optional and depends on your deployment strategy.
         # You might need to SSH into your server to run this.
         # For simplicity in this example, we'll just demonstrate running.
         # In a real-world scenario, consider more robust deployment tools.
-        run: |
-          echo "Skipping stopping existing services for this example."
+       # run: |
+        #  echo "Skipping stopping existing services for this example."
           # Example if you were SSHing:
           # ssh user@your-server-ip "cd /path/to/your/app && docker-compose down"
 
@@ -80,6 +80,6 @@ jobs:
         # container orchestration. For a simple example, we'll assume
         # Docker Compose is available on the runner.
         run: |
-          sudo apt-install docker-compose -y
+          sudo apt-get install docker-compose -y
           docker-compose --version
           docker-compose up -d --build
