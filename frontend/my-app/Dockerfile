@@ -1,5 +1,6 @@
 # Use a lightweight Node.js image as the base
-FROM node:14-alpine as builder
+#FROM node:14-alpine as builder
+FROM node:14-alpine
 
 # Set the working directory inside the container
 WORKDIR /app/frontend
@@ -18,19 +19,19 @@ COPY . .
 RUN npm run build
 
 # --- Production stage ---
-FROM node:14-alpine
+#FROM node:14-alpine
 
 # Set the working directory
-WORKDIR /app/frontend
+#WORKDIR /app/frontend
 
 # Copy the built application from the builder stage
-COPY --from=builder /app/frontend/build ./build
+# COPY --from=builder /app/frontend/build ./build
 
 # Install a simple static file server (e.g., serve)
-RUN npm install -g serve
+# RUN npm install -g serve
 
 # Expose the port your application will run on
-EXPOSE 3000
+# EXPOSE 3000
 
 # Command to start the static file server and serve the built application
-CMD ["serve", "-s", "build", "-l", "3000"]
+# CMD ["serve", "-s", "build", "-l", "3000"]
