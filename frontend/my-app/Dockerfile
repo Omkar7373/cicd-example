@@ -1,10 +1,11 @@
-# Use a lightweight Node.js image for building
-FROM node:lts-alpine as builder
+# Use a lightweight Node.js image as the base
+FROM node:14-alpine as builder
 
-# Set the working directory
-WORKDIR /app
+# Set the working directory inside the container
+WORKDIR /app/frontend
 
-# Copy package.json and package-lock.json
+# Copy package.json and package-lock.json (or yarn.lock)
+# to leverage Docker's layer caching
 COPY package*.json ./
 
 # Install dependencies
@@ -13,17 +14,23 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
-# Build the React application
+# Build the React application (assuming Create React App or similar build setup)
 RUN npm run build
 
-# Use a lightweight web server image for serving the built application
-FROM nginx:alpine
+# --- Production stage ---
+FROM node:14-alpine
 
-# Copy the built application from the builder stage to the Nginx html directory
-COPY --from=builder /app/build /usr/share/nginx/html
+# Set the working directory
+WORKDIR /app/frontend
 
-# Expose port 80
-EXPOSE 80
+# Copy the built application from the builder stage
+COPY --from=builder /app/frontend/build ./build
 
-# Command to run Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Install a simple static file server (e.g., serve)
+RUN npm install -g serve
+
+# Expose the port your application will run on
+EXPOSE 3000
+
+# Command to start the static file server and serve the built application
+CMD ["serve", "-s", "build", "-l", "3000"]
