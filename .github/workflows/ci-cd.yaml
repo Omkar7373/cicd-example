@@ -44,7 +44,7 @@ jobs:
 
       - name: Build and tag frontend Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/frontend:latest ./frontend/
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/frontend:latest ./frontend/my-app/
           docker tag ${{ secrets.DOCKER_USERNAME }}/frontend:latest ${{ secrets.DOCKER_USERNAME }}/frontend:${{ github.sha }} # Tag with commit SHA
 
       - name: Build and tag backend Docker image
